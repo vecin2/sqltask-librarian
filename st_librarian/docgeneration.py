@@ -10,8 +10,6 @@ class DocGenerator(object):
         self.tasklib = tasklib
 
     def generate(self, path=Path("docs/templates.md")):
-        print("path is " + str(path))
-        print("path abs is " + str(path.absolute()))
         mdFile = MdUtils(file_name=str(path), title="SQLTask Library")
         sections = self._sections()
         self.append_summary(mdFile, sections)
