@@ -154,3 +154,13 @@ class SQLTaskLib(object):
     def _create_template(self, filepath):
         relative_path = filepath.relative_to(self.rootpath)
         return Template(self.rootpath, relative_path)
+
+    def db_queries(self, schema_prefix):
+        file_name = f"{schema_prefix}_queries.sql"
+        return self.rootpath / "db" / file_name
+
+    def context_values(self):
+        return str(self.rootpath / "config" / "context_values.yaml")
+
+    def test_context_values(self):
+        return str(self.rootpath / "config" / "test_context_values.yaml")

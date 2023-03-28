@@ -5,11 +5,11 @@ import fire
 from st_librarian import DocGenerator, Renamer, SQLTaskLib
 
 
-def generate_docs(library=None):
+def generate_docs(library):
     library_path = Path(library)
     library = SQLTaskLib(library_path)
 
-    DocGenerator(library).generate(library_path / "templates.md")
+    DocGenerator(library).generate(library_path / "Library.md")
 
 
 def rename(old_name, new_name, library):

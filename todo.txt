@@ -1,0 +1,10 @@
+tasklib add-task --name add_user.sql
+tasklib remove-task --name add_user.sql
+tasklib rename-task --name add_user.sql
+tasklib add-task-version --name add_user.sql --version <=5.6.7
+tasklib import-task --name add_user.sql --version 6.5.7
+tasklib export --version 6.7.8 
+tasklib import --version 6.7.9 
+
+--document queries,docs,tasks (multiple levels)
+-- 

@@ -46,7 +46,7 @@ class InlineImage(MarkdownRelativeLink):
                 text=self.name, path=str(self._get_url(Path(mdFile.file_name)))
             )
         )
-        mdFile.new_line("Image: " + self.name, bold_italics_code="b")
+        mdFile.new_line("Image " + self.name, align="center", bold_italics_code="b")
         mdFile.new_line("")
 
 
@@ -61,9 +61,7 @@ class EntitySection(object):
 
     def append_to(self, mdFile):
         mdFile.new_header(level=1, title=self.title)
-        summary = (
-            f"Currently, there are {len(self.templates)} templates in this section"
-        )
+        summary = f"There are currently {len(self.templates)} templates in this section"
         mdFile.new_line(summary)
         for template in self.templates:
             template.append_to(mdFile)
@@ -110,7 +108,7 @@ class TemplateSection(object):
             "*Template:* " + self.template_link.render(Path(mdFile.file_name))
         )
         mdFile.new_line("*Test:* " + self.test_link.render(Path(mdFile.file_name)))
-        self.append_anchors(mdFile, "Tasks", self.template.related_tasks())
+        self.append_anchors(mdFile, "Related Tasks", self.template.related_tasks())
         self.append_anchors(mdFile, "Views", self.template.related_views())
 
     def append_anchors(self, mdFile, content_name, templates):

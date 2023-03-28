@@ -13,26 +13,28 @@ class DocGenerator(object):
         mdFile = MdUtils(file_name=str(path), title="SQLTask Library")
         sections = self._sections()
         self.append_summary(mdFile, sections)
-        self.append_table_of_contents(mdFile)
+        contents_marker = self.append_table_of_contents(mdFile)
         for section in sections:
             print(f"Generating Section {section.title}")
             section.append_to(mdFile)
         mdFile.new_table_of_contents(
-            table_title="Table Of Contents", depth=2, marker="Table Of Contents"
+            table_title="Tables of Contents", depth=2, marker=contents_marker
         )
         mdFile.create_md_file()
         print(f"\n{path} has been generated")
 
     def append_table_of_contents(self, mdFile):
-        mdFile.new_header(level=1, title="Table Of Contents")
+        return mdFile.create_marker("tableOfContents")
 
     def append_summary(self, mdFile, sections):
         counter = 0
         summary = ""
         for section in sections:
-            summary += f"{len(section.templates)} {section.anchor()}, "
+            if summary:
+                summary += ", "
+            summary += f"{len(section.templates)} {section.anchor()}"
             counter += len(section.templates)
-        summary = f"The SQL tasks library has currently a total of {counter} templates, divided in {len(sections)} sections; {summary}"
+        summary = f"The SQL tasks library has currently a total of {counter} templates, divided in {len(sections)} sections; {summary}\n"
         mdFile.new_paragraph(summary)
 
     def _sections(self):
