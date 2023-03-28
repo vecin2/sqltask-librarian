@@ -1,3 +1,4 @@
+import shutil
 from pathlib import Path
 
 from mdutils.mdutils import MdUtils
@@ -10,7 +11,7 @@ class DocGenerator(object):
         self.tasklib = tasklib
 
     def generate(self, path=Path("docs/templates.md")):
-        mdFile = MdUtils(file_name=str(path), title="SQLTask Library")
+        mdFile = MdUtils(file_name=path.name, title="SQLTask Library")
         sections = self._sections()
         self.append_summary(mdFile, sections)
         contents_marker = self.append_table_of_contents(mdFile)
@@ -20,7 +21,10 @@ class DocGenerator(object):
         mdFile.new_table_of_contents(
             table_title="Tables of Contents", depth=2, marker=contents_marker
         )
+
         mdFile.create_md_file()
+        shutil.move(src=path.name, dst=str(path))
+
         print(f"\n{path} has been generated")
 
     def append_table_of_contents(self, mdFile):

@@ -62,8 +62,14 @@ class Template(object):
             return "".join(file.readlines())
         return ""
 
-    def testpath(self):
-        parts = list(self.relpath().parts)
+    def reltestpath(self):
+        return self._compute_testpath_from_templatepath(self.relpath())
+
+    def abstestpath(self):
+        return self._compute_testpath_from_templatepath(self.abspath())
+
+    def _compute_testpath_from_templatepath(self, template_path):
+        parts = list(template_path.parts)
         parts[parts.index("templates")] = "test_templates"
         parts[-1] = "test_" + parts[-1]  # replace filename
         return Path(*parts)

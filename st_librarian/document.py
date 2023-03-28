@@ -80,7 +80,7 @@ class TemplateSection(object):
 
     @property
     def test_link(self):
-        testpath = self.template.testpath()
+        testpath = self.template.reltestpath()
         return MarkdownRelativeLink(testpath.name, testpath)
 
     def images(self):
@@ -107,9 +107,10 @@ class TemplateSection(object):
         mdFile.new_line(
             "*Template:* " + self.template_link.render(Path(mdFile.file_name))
         )
-        mdFile.new_line("*Test:* " + self.test_link.render(Path(mdFile.file_name)))
+        if self.template.abstestpath().exists():
+            mdFile.new_line("*Test:* " + self.test_link.render(Path(mdFile.file_name)))
         self.append_anchors(mdFile, "Related Tasks", self.template.related_tasks())
-        self.append_anchors(mdFile, "Views", self.template.related_views())
+        self.append_anchors(mdFile, "Related Views", self.template.related_views())
 
     def append_anchors(self, mdFile, content_name, templates):
         anchors = []
