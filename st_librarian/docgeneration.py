@@ -7,14 +7,51 @@ from st_librarian.document import EntitySection, TemplateSection
 from st_librarian.sqltasklib import ViewType
 
 
+class MdFileWrapper(object):
+    def __init__(self, path=None, title=None):
+        self.path = path
+        self.mdFile = MdUtils(file_name=path.name, title=title)
+
+    @property
+    def header(self):
+        return self.mdFile.header
+
+    def create_md_file(self):
+        self.mdFile.create_md_file()
+        shutil.move(src=self.path.name, dst=str(self.path))
+
+    def new_line(
+        self, text="", bold_italics_code="", color="black", align="", wrap_width=0
+    ):
+        return self.mdFile.new_line(text=text, bold_italics_code=bold_italics_code, color=color, align=align, wrap_width=wrap_width)
+
+    def new_header(self, level=None, title=None):
+        return self.mdFile.new_header(level=level, title=title)
+
+    def new_paragraph(
+        self, text="", bold_italics_code="", color="black", align="", wrap_width=0
+    ):
+        return self.mdFile.new_paragraph(text=text,bold_italics_code=bold_italics_code,color=color,align=align,wrap_width=wrap_width)
+
+    def new_inline_image(self, text=None, path=None):
+        return self.mdFile.new_inline_image(text=text, path=path)
+
+    def new_table_of_contents(
+        self, table_title="Table of contents", depth=1, marker=""
+    ):
+        return self.mdFile.new_table_of_contents(
+            table_title=table_title, depth=depth, marker=marker
+        )
+
+    def create_marker(self, text_marker):
+        return self.mdFile.create_marker(text_marker)
+
 class DocGenerator(object):
     def __init__(self, tasklib):
         self.tasklib = tasklib
 
-    def generate(
-        self, path=Path("docs/templates.md"), view_type=ViewType.BY_FOLDER
-    ):
-        mdFile = MdUtils(file_name=path.name, title="SQLTask Library")
+    def generate(self, path=Path("docs/templates.md"), view_type=ViewType.BY_FOLDER):
+        mdFile = MdFileWrapper(path=path, title="SQLTask Library")
         sections = self._sections(view_type)
         self.append_summary(mdFile, sections)
         contents_marker = self.append_table_of_contents(mdFile)
@@ -26,7 +63,6 @@ class DocGenerator(object):
         )
 
         mdFile.create_md_file()
-        shutil.move(src=path.name, dst=str(path))
 
         print(f"\n{path} has been generated")
 

@@ -30,10 +30,16 @@ class MarkdownRelativeLink(object):
 
     def _get_url(self, save_location):
         result = ""
+        root_folder_name = self.url_to.parts[0]  # get project root folder name
+        # navigate from document path back to project path
+        result = Path()
+        for part in reversed(save_location.parts[:-1]):
+            if part == root_folder_name:
+                break
+            else:
+                result = result / ".."
 
-        for parent in save_location.parents:
-            result = ".." / parent
-        return result / self.url_to
+        return result /  self.url_to.relative_to(*self.url_to.parts[:1])
 
 
 class InlineImage(MarkdownRelativeLink):
@@ -43,7 +49,7 @@ class InlineImage(MarkdownRelativeLink):
     def append_to(self, mdFile):
         mdFile.new_line(
             mdFile.new_inline_image(
-                text=self.name, path=str(self._get_url(Path(mdFile.file_name)))
+                text=self.name, path=str(self._get_url(Path(mdFile.path)))
             )
         )
         mdFile.new_line("Image " + self.name, align="center", bold_italics_code="b")
@@ -111,11 +117,9 @@ class TemplateSection(object):
                 # mdFile.new_paragraph(image.render(Path(mdFile.file_name)))
 
     def append_related_content(self, mdFile):
-        mdFile.new_line(
-            "*Template:* " + self.template_link.render(Path(mdFile.file_name))
-        )
+        mdFile.new_line("*Template:* " + self.template_link.render(Path(mdFile.path)))
         if self.template.abstestpath().exists():
-            mdFile.new_line("*Test:* " + self.test_link.render(Path(mdFile.file_name)))
+            mdFile.new_line("*Test:* " + self.test_link.render(Path(mdFile.path)))
         self.append_anchors(mdFile, "Related Tasks", self.template.related_tasks())
         self.append_anchors(mdFile, "Related Views", self.template.related_views())
 
