@@ -99,9 +99,16 @@ class TemplateSection(object):
         self.append_related_content(mdFile)
         mdFile.new_paragraph(self.template.oneline_description())
         mdFile.new_paragraph(self.template.long_description())
-        for image in self.images():
-            image.append_to(mdFile)
-            # mdFile.new_paragraph(image.render(Path(mdFile.file_name)))
+        mdFile.new_line()
+        self.append_images(mdFile)
+
+    def append_images(self, mdFile):
+        if self.images():
+            mdFile.new_line("**Images**")
+            mdFile.new_line()
+            for image in self.images():
+                image.append_to(mdFile)
+                # mdFile.new_paragraph(image.render(Path(mdFile.file_name)))
 
     def append_related_content(self, mdFile):
         mdFile.new_line(

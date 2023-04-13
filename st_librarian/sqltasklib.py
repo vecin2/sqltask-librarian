@@ -1,8 +1,10 @@
 import os
 from collections import defaultdict
+from enum import Enum
 from pathlib import Path
 
-from st_librarian.parser import IniParser, JinjaCommentParser
+from st_librarian.metadata_parser import IniParser, JinjaCommentParser
+from st_librarian.naming import TaskNameParser
 
 
 class TemplateInfo(object):
@@ -122,20 +124,40 @@ class Template(object):
             f.write(content)
 
 
+class ViewType(Enum):
+    BY_FOLDER = 1
+    BY_ENTITY = 2
+
+
 class SQLTaskLib(object):
     def __init__(self, rootpath):
         self.rootpath = rootpath
         self.templates_path = rootpath / "templates"
 
-    def sections(self):
+    def sections(self, view_type):
         sections = defaultdict(list)
         for current_folder, dirs, files in os.walk(self.templates_path):
-            key = self._map_folder_to_section_name(Path(current_folder).name)
-
             for filename in sorted(files):
                 absolute_filepath = Path(current_folder + "/" + filename)
-                self._append_template(sections[key], absolute_filepath)
+                for key in self.get_section_keys(absolute_filepath, view_type):
+                    self._append_template(
+                        sections[key],
+                        absolute_filepath,
+                    )
         return sections
+
+    def get_section_keys(self, absolute_filepath, view_type):
+        if view_type == ViewType.BY_FOLDER:
+            current_folder = absolute_filepath.parent
+            return [self._map_folder_to_section_name(Path(current_folder).name)]
+        else:
+            task_name = TaskNameParser().parse(absolute_filepath.stem)
+            result = [task_name.main_entity]
+            if task_name.secondary_entity:
+                result.append(task_name.secondary_entity)
+            return result
+
+            raise Exception("Invalid view type")
 
     def list_all(self):
         result = []

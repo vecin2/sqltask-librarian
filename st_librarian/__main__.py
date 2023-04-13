@@ -3,13 +3,16 @@ from pathlib import Path
 import fire
 
 from st_librarian import DocGenerator, Renamer, SQLTaskLib
+from st_librarian.sqltasklib import ViewType
 
 
 def generate_docs(library):
     library_path = Path(library)
     library = SQLTaskLib(library_path)
+    doc_generator =DocGenerator(library)
 
-    DocGenerator(library).generate(library_path / "Library.md")
+    doc_generator.generate(library_path / "docs/LibraryByFolder.md",ViewType.BY_FOLDER)
+    doc_generator.generate(library_path / "docs/LibraryByEntity.md",ViewType.BY_ENTITY)
 
 
 def rename(old_name, new_name, library):

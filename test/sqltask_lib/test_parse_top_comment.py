@@ -1,6 +1,6 @@
 from io import StringIO
 
-from sqltask_lib.parser import JinjaCommentParser
+from st_librarian.metadata_parser import JinjaCommentParser
 
 
 def open_reader(text):

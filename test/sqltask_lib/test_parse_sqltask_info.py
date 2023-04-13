@@ -1,4 +1,4 @@
-from sqltask_lib.parser import IniParser
+from st_librarian.metadata_parser import IniParser
 
 
 def parse_section_body(title, text):
